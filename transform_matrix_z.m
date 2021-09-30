@@ -1,4 +1,4 @@
-function [T] = transform_matrix(deg, D)
+function [T] = transform_matrix_z(deg, D)
 
 T = [cos(deg2rad(deg)), -sin(deg2rad(deg)), 0, D(1);
     sin(deg2rad(deg)), cos(deg2rad(deg)), 0, D(2);
