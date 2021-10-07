@@ -1,11 +1,11 @@
-# Portafilter movements in Robotk
+# Portafilter movements in RoboDK
 
 # Import of functions
 import numpy as np
 import robolink as rl    # RoboDK API
 import robodk as rdk     # Robot toolbox
 
-# Transforms 
+# Transforms (this is out-dated, rad is now np.deg2rad(deg))
 def transform_rotx(rad, translation_vector):
     transform_matrix = [[1, 0, 0, translation_vector[0]],
                         [0, np.cos(rad), -np.sin(rad), translation_vector[1]],
