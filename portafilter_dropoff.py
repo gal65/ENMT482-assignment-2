@@ -125,7 +125,10 @@ theta_tam = 0
 UR_T_TAM0 = transform_rotz(theta_tam_b, [600.1, 52.8, 254.5])
 TAM_b_T_TAM = transform_roty(theta_tam, [-80,0,-55])
 
-#TAM_b_T_TAM_offset = transform_rotz(-90, [0,0,0])
+TAM_T_TAM_offset = np.array([[0, 0, 1, 0],
+                             [0, 1, 0, 0],
+                             [1, 0, 0, -20],
+                             [0, 0, 0, 1])
 
 UR_T_TAM = np.matmul(UR_T_TAM0, TAM_b_T_TAM)
 #UR_T_TAM_offset = np.matmul (UR_T_TAM, TAM_b_T_TAM_offset)
