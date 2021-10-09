@@ -167,18 +167,21 @@ T_SCR_np = np.matmul(UR_T_SCR_offset, pf1)
 '''Maths for portafilter to group head interactions'''
 # Finding rotation of tool stand frame
 ur_diff_tool = np.array([-645.7, 78.5, 19.05] - np.array([-556.5, -77.4, 19.05]))
-theta_tool = -np.rad2deg(np.arctan2(ur_diff_tam[1], ur_diff_tam[0]))
-
+theta_tool = -45 - np.rad2deg(np.arctan(ur_diff_tool[0]/ ur_diff_tool[1]))
+print(theta_tool)
 # Defining transform frames
 UR_T_TOOL = transform_rotz(theta_tool, [-556.5, -77.4, 19.05])
 offset_tool = [0, 0, -20]
-TOOL_T_TOOL_offset = np.array([[1, 0, 0, 14.9 + offset_tool[0]],
+TOOL_T_TOOL_offset = np.array([[0, 0, -1, 14.9 + offset_tool[0]],
                                [0, 1, 0, 64.9 + offset_tool[1]],
-                               [0, 0, 1, 167.0 + offset_tool[2]],
+                               [1, 0, 0, 167.0 + offset_tool[2]],
                                [0, 0, 0, 1]])
 
 UR_T_TOOL_offset = np.matmul(UR_T_TOOL, TOOL_T_TOOL_offset)
-T_TOOL_np = np.matmul(UR_T_TOOL, pf1)
+T_TOOL_np = np.matmul(UR_T_TOOL_offset, pf1)
+
+
+'''Maths for cup tool interaction'''
 
 
 '''Intermediate points to avoid collisions'''
@@ -192,6 +195,7 @@ J_int_to_gr = [-83.570000, -80.360000, -80.360000, -113.650000, 89.500000, -189.
 # Approach to Grinder
 J_int_gr_app1 = [-19.201600, -53.189157, -138.267149, -175.169392, -71.128105, -235.889759]
 J_int_gr_app2 = [-29.903868, -78.882506, -136.661916, -152.208894, -93.971698, -218.836334]
+J_int_gr_back = [-14.304299, -77.363544, -131.805262, -142.140115, -58.785872, -225.158187]
 
 # Approach and use Scraper
 J_int_scr = [1.350562, -84.577835, -133.368424, -134.568357, -103.198280, -232.058700]
@@ -200,9 +204,19 @@ J_int_scr = [1.350562, -84.577835, -133.368424, -134.568357, -103.198280, -232.0
 J_int_tam_app1 = [30.875870, -87.133813, -147.913060, -117.368034, -73.916930, -235.889759]
 J_int_tam_press = [27.417668, -93.659585, -134.449217, -124.422190, -77.345353, -235.422196]
 
-# Approach Group head test
+# Approach Group head and mount
 J_int_head_app1 = [-65.465489, -80.526318, -150.774462, -117.220771, -67.649351, -228.364063]
 J_int_head_app2 = [-151.070000, -80.360000, -150.770000, -117.220000, -67.640000, -221.790000]
+
+# Move up and Twist
+J_int_head_mount1 = [-137.809262, -78.887219, -137.874629, -129.501480, -33.344834, -231.541661]
+J_int_head_mount2 = [-146.344641, -75.999088, -139.664600, -134.898369, -52.748139, -225.746259]
+J_int_head_mount3 = [-152.696579, -75.704600, -139.810264, -136.218434, -65.201818, -223.487787]
+J_int_head_mount4 = [-158.306490, -76.278528, -139.399804, -136.580987, -75.709086, -221.922486]
+
+# Move to final position  for placement
+J_int_porta_final = [-159.722528, -107.893132, -133.980426, -107.883534, -132.790144, -213.003506]
+J_int_porta_final2 = [-118.930000, -66.520000, -143.400000, -142.500000, -41.790000, -219.010000]
 
 # Convert Matricies to RDK matricies
 T_PF2 = rdk.Mat(T_PF2_np.tolist())
@@ -213,22 +227,28 @@ T_TOOL = rdk.Mat(T_TOOL_np.tolist())
 
 
 # Run program Module
+
+'''Portafilter commands'''
+
 # Mount portafilter tool
-robot.MoveJ(T_home, blocking=True)
+robot.MoveJ(target, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Portafilter Tool Attach (Tool Stand)", True)
 
 # Move to Grinder and drop off tool
 robot.MoveJ(J_int_to_gr, blocking=True)
 robot.MoveJ(J_int_gr_app1, blocking=True)
-robot.MoveJ(J_int_gr_app2, blocking=True)
 
 robot.MoveL(T_PF2, blocking=True)
 robot.MoveL(T_drop, blocking=True)
 RDK.RunProgram("Portafilter Tool Detach (Grinder)", True)
 
+#Back away from portafilter and 
+robot.MoveJ(J_int_gr_back, blocking=True)
+robot.MoveJ(target, blocking=True)
+
 # Reattach to portafilter and move away
-robot.MoveJ(T_home, blocking=True)
+robot.MoveJ(J_int_gr_back, blocking=True)
 RDK.RunProgram("Portafilter Tool Attach (Grinder)", True)
 robot.MoveJ(J_int_gr_app2, blocking=True)
 
@@ -243,13 +263,27 @@ robot.MoveJ(J_int_tam_press, blocking=True)
 robot.MoveL(T_TAM, blocking=True)
 robot.MoveJ(J_int_tam_app1, blocking=True)
 
-# Approach and use group head
+# Approach and mount to group head
 robot.MoveJ(J_int_head_app1, blocking=True)
 robot.MoveJ(J_int_head_app2, blocking=True)
 robot.MoveL(T_TOOL, blocking=True)
-sleep(1)
-# Put back on rack
-robot.MoveJ(J_int_tool, blocking=True)
+robot.MoveJ(J_int_head_mount1, blocking=True)
+robot.MoveJ(J_int_head_mount2, blocking=True)
+robot.MoveJ(J_int_head_mount3, blocking=True)
+robot.MoveJ(J_int_head_mount4, blocking=True)
 
+# Pull out portafilter and bring near coffee machine
+robot.MoveJ(J_int_head_mount3, blocking=True)
+robot.MoveJ(J_int_head_mount2, blocking=True)
+robot.MoveJ(J_int_head_mount1, blocking=True)
+robot.MoveL(T_TOOL, blocking=True)
+robot.MoveJ(J_int_porta_final, blocking=True)
+robot.MoveJ(J_int_porta_final2, blocking=True)
+
+# Put Portafilter back on rack
 RDK.RunProgram("Portafilter Tool Detach (Tool Stand)", True)
+robot.MoveJ(target, blocking=True)
 
+'''
+# Pick up cup tool
+RDK.RunProgram("Portafilter Tool Detach (Tool Stand)", True)'''
