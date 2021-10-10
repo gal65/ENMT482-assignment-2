@@ -56,9 +56,9 @@ def portafilter_tool(mode):
 
 def cup_tool():
     # Cup Tool frame in TCP frame
-    TCP_T_CT = transform_rotz(50, [0, 0, 0]) 
+    TCP_T_CT = transform_rotz(-50, [0, 0, 0]) 
     D_CC = [-47, 0, 186.11]
-    CT_T_CC = transform_rotz(0, D_CC)
+    CT_T_CC = transform_roty(0, D_CC)
     return np.matmul(np.linalg.inv(CT_T_CC), np.linalg.inv(TCP_T_CT))
     
 def offset(x,y,z):
@@ -136,10 +136,11 @@ theta_tam = -np.rad2deg(np.arctan2(ur_diff_tam[2], ur_diff_tam[1]))
 UR_T_TAMb = transform_rotz(theta_tam_b, [600.1, 52.8, 254.5])
 TAM_b_T_TAM = transform_roty(theta_tam, [-80,0,-55])
 
-# Offset of tapper on approach + orientation
-TAM_T_TAM_offset = np.array([[0, 1, 0, 10],
-                             [0, 0, 1,-5],
-                             [1, 0, 0, -50],
+## Offset of tapper on approach + orientation
+tam_offset = [10, -5, -50]
+TAM_T_TAM_offset = np.array([[0, 1, 0, tam_offset[0]],
+                             [0, 0, 1, tam_offset[1]],
+                             [1, 0, 0, tam_offset[2]],
                              [0, 0, 0, 1]])
 
 # Final Matrix Calculations
@@ -154,11 +155,13 @@ T_TAM_np = np.matmul(UR_T_TAM_offset, pf1)
 TAM_b_T_SCR = transform_roty(theta_tam, [70,0,-32])
 
 # Defining Offset on scraper start
-TAM_T_SCR_offset = np.array([[0, 1, 0, 0],
-                             [0, 0, 1, 50],
-                             [1, 0, 0, -5],
+scr_offset = [0, 50, -5]
+TAM_T_SCR_offset = np.array([[0, 1, 0, scr_offset[0]],
+                             [0, 0, 1, scr_offset[1]],
+                             [1, 0, 0, scr_offset[2]],
                              [0, 0, 0, 1]])
 
+# Final Matrix Calculations
 UR_T_SCR = np.matmul(UR_T_TAMb, TAM_b_T_SCR)
 UR_T_SCR_offset = np.matmul (UR_T_SCR, TAM_T_SCR_offset)
 T_SCR_np = np.matmul(UR_T_SCR_offset, pf1)
@@ -168,13 +171,14 @@ T_SCR_np = np.matmul(UR_T_SCR_offset, pf1)
 # Finding rotation of tool stand frame
 ur_diff_tool = np.array([-645.7, 78.5, 19.05] - np.array([-556.5, -77.4, 19.05]))
 theta_tool = -45 - np.rad2deg(np.arctan(ur_diff_tool[0]/ ur_diff_tool[1]))
-print(theta_tool)
+
 # Defining transform frames
 UR_T_TOOL = transform_rotz(theta_tool, [-556.5, -77.4, 19.05])
-offset_tool = [0, 0, -20]
-TOOL_T_TOOL_offset = np.array([[0, 0, -1, 14.9 + offset_tool[0]],
-                               [0, 1, 0, 64.9 + offset_tool[1]],
-                               [1, 0, 0, 167.0 + offset_tool[2]],
+offset_head = [0, 0, -20]
+
+TOOL_T_TOOL_offset = np.array([[0, 0, -1, 14.9 + offset_head[0]],
+                               [0, 1, 0, 64.9 + offset_head[1]],
+                               [1, 0, 0, 167.0 + offset_head[2]],
                                [0, 0, 0, 1]])
 
 UR_T_TOOL_offset = np.matmul(UR_T_TOOL, TOOL_T_TOOL_offset)
@@ -182,6 +186,19 @@ T_TOOL_np = np.matmul(UR_T_TOOL_offset, pf1)
 
 
 '''Maths for cup tool interaction'''
+# Defining transforms for cup holder frame
+UR_T_CUP_b = transform_rotz(0, [-1.1, -600.8, -20])
+CUP_b_T_CUP = offset(0, 0, 180)
+cup_offset = [0,0,5]
+CUP_T_CUP_offset = np.array([[0, 1, 0, cup_offset[0]],
+                             [0, 0, -1, cup_offset[1]],
+                             [-1, 0, 0, cup_offset[2]],
+                             [0, 0, 0, 1]])
+
+UR_T_CUP = np.matmul(UR_T_CUP_b, CUP_b_T_CUP)
+UR_T_CUP_offset = np.matmul(UR_T_CUP, CUP_T_CUP_offset)
+T_CUP_np = np.matmul(UR_T_CUP_offset, cup_t)
+
 
 
 '''Intermediate points to avoid collisions'''
@@ -218,12 +235,18 @@ J_int_head_mount4 = [-158.306490, -76.278528, -139.399804, -136.580987, -75.7090
 J_int_porta_final = [-159.722528, -107.893132, -133.980426, -107.883534, -132.790144, -213.003506]
 J_int_porta_final2 = [-118.930000, -66.520000, -143.400000, -142.500000, -41.790000, -219.010000]
 
+# Move to cup holder
+J_int_cup1 = [-112.500000, -76.850000, -78.630000, -114.590000, 89.440000, -205.640000]
+J_int_cup2 = [-59.252173, -93.408148, -160.913903, 67.104091, 63.043985, -218.809144]
+J_int_cup_pickup = [-67.631873, -98.878992, -141.092600, 59.971592, 67.631873, -220.000000]
+
 # Convert Matricies to RDK matricies
 T_PF2 = rdk.Mat(T_PF2_np.tolist())
 T_drop = rdk.Mat(T_drop_np.tolist())
 T_TAM = rdk.Mat(T_TAM_np.tolist())
 T_SCR = rdk.Mat(T_SCR_np.tolist())
 T_TOOL = rdk.Mat(T_TOOL_np.tolist())
+T_CUP = rdk.Mat(T_CUP_np.tolist())
 
 
 # Run program Module
@@ -231,7 +254,7 @@ T_TOOL = rdk.Mat(T_TOOL_np.tolist())
 '''Portafilter commands'''
 
 # Mount portafilter tool
-robot.MoveJ(target, blocking=True)
+robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Portafilter Tool Attach (Tool Stand)", True)
 
@@ -284,6 +307,24 @@ robot.MoveJ(J_int_porta_final2, blocking=True)
 RDK.RunProgram("Portafilter Tool Detach (Tool Stand)", True)
 robot.MoveJ(target, blocking=True)
 
+
+
 '''
 # Pick up cup tool
-RDK.RunProgram("Portafilter Tool Detach (Tool Stand)", True)'''
+robot.MoveJ(target, blocking=True)
+robot.MoveJ(T_home, blocking=True)
+robot.MoveJ(J_int_tool, blocking=True)
+RDK.RunProgram("Cup Tool Attach (Stand)", True)
+
+# Approach cup
+robot.MoveJ(J_int_cup1, blocking=True)
+robot.MoveJ(J_int_cup2, blocking=True)
+RDK.RunProgram("Cup Tool Open", True)
+robot.MoveL(T_CUP, blocking=True)
+RDK.RunProgram("Cup Tool Close", True)
+robot.MoveJ(J_int_cup_pickup, blocking=True)           
+sleep(1)
+robot.MoveJ(J_int_tool, blocking=True)
+RDK.RunProgram("Cup Tool Detach (Stand)", True)
+robot.MoveJ(target, blocking=True)
+'''
