@@ -2,6 +2,7 @@
 import numpy as np
 import robolink as rl    # RoboDK API
 import robodk as rdk     # Robot toolbox
+from time import sleep
 
 # Transforms (this is out-dated, rad is now np.deg2rad(deg))
 def transform_rotx(deg, translation_vector):
@@ -86,7 +87,7 @@ UR_T_BUT1 = np.matmul(UR_T_GM, GM_T_BUT1)
 UR_T_BUT1_offset = np.matmul(UR_T_BUT1, BUT1_T_offset)
 
 # press ON
-BUT1_ON_T = offset(0,0,-51)
+BUT1_ON_T = offset(0,0,51)
 
 # Final matrix calcs
 T_BUT1_np = np.matmul(UR_T_BUT1_offset, gt_push)
@@ -115,9 +116,14 @@ RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 # Move to grinder machine 
 # robot.MoveJ(J_int_to_gr, blocking=True)
 robot.MoveL(T_BUT1, blocking=True)
+sleep(2)
 
 # Perform button press
-robot.moveL(T_BUT1_ON, blocking=True)
+robot.MoveL(T_BUT1_ON, blocking=True)
+sleep(1)
+
+robot.MoveL(T_BUT1, blocking=True)
+sleep(2)
 
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
