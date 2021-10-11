@@ -80,16 +80,12 @@ target = RDK.Item('Home')   # existing target in station
 robot.setPoseFrame(world_frame)
 robot.setPoseTool(robot.PoseTool())
 
-# Define tool matricies
+# Define tool matrices
 pf1 = portafilter_tool('pf1')
 pf2 = portafilter_tool('pf2')
 gt_push = grinder_tool('push')
 gt_pull = grinder_tool('pull')
 cup_t = cup_tool();
-
-
-
-
 
 # Directly use the RDK Matrix object from to hold pose (its an HT)
 T_home = rdk.Mat([[     0.000000,     0.000000,     1.000000,   523.370000 ],
@@ -99,7 +95,7 @@ T_home = rdk.Mat([[     0.000000,     0.000000,     1.000000,   523.370000 ],
 
 
 '''Maths for Portafilter to grinder interaction'''
-# Finding angle z rotation of ginder frame to UR Frame = 135.204 deg z rot
+# Finding angle z rotation of grinder frame to UR Frame = 135.204 deg z rot
 ur_diff_gr_pf2 =  np.array([370.1, -322.5,65.9]) - np.array([482.7, -434.3, 317.3])
 theta_gr = np.rad2deg(np.arctan2(ur_diff_gr_pf2[1],ur_diff_gr_pf2[0]))
 
@@ -136,7 +132,7 @@ theta_tam = -np.rad2deg(np.arctan2(ur_diff_tam[2], ur_diff_tam[1]))
 UR_T_TAMb = transform_rotz(theta_tam_b, [600.1, 52.8, 254.5])
 TAM_b_T_TAM = transform_roty(theta_tam, [-80,0,-55])
 
-## Offset of tapper on approach + orientation
+## Offset of tamper on approach + orientation
 tam_offset = [10, -5, -50]
 TAM_T_TAM_offset = np.array([[0, 1, 0, tam_offset[0]],
                              [0, 0, 1, tam_offset[1]],
@@ -240,7 +236,7 @@ J_int_cup1 = [-112.500000, -76.850000, -78.630000, -114.590000, 89.440000, -205.
 J_int_cup2 = [-59.252173, -93.408148, -160.913903, 67.104091, 63.043985, -218.809144]
 J_int_cup_pickup = [-67.631873, -98.878992, -141.092600, 59.971592, 67.631873, -220.000000]
 
-# Convert Matricies to RDK matricies
+# Convert np matrices to RDK matricies
 T_PF2 = rdk.Mat(T_PF2_np.tolist())
 T_drop = rdk.Mat(T_drop_np.tolist())
 T_TAM = rdk.Mat(T_TAM_np.tolist())
