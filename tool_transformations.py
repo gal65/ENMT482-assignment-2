@@ -25,7 +25,7 @@ def portafilter_tool(mode):
     mode = 'PF1'
     if (mode.lower() == 'pf1'):
         D_PF1 = [4.71, 0, 144.76]
-        PT_T_PF1 = transform_roty(-7.5, D_PF1)
+        PT_T_PF1 = transform_roty(  7.5, D_PF1)
         return np.matmul(np.linalg.inv(PT_T_PF1), np.linalg.inv(TCP_T_PT)) 
     else:
         D_PF2 = [-32, 0, 27.56]
