@@ -197,13 +197,13 @@ T_TAB_PULL4_np = np.matmul(UR_T_TAB_PULL4, gt_pull)
 ''' Coffee Machine button'''
 D_CM = [-368.4, -389, 350.6]
 UR_T_CM = transform_rotz(104.7209, D_CM)
-D_BUT3 = [50.67, 35.25, -27.89]
-CM_T_BUT = transform_roty(90, D_BUT3)
+CM_D_BUT = [50.67, 35.25, -27.89]
+CM_T_BUT = transform_roty(90, CM_D_BUT)
 CM_T_BUT = np.matmul(CM_T_BUT, transform_rotx(-25,[0,0,0]))
 
 # Correction offset for CM ON button
-BUT3_correction = offset(0,0,0)
-CM_T_BUT = np.matmul(CM_T_BUT, BUT3_correction)
+CM_BUT_correction = offset(0,0,0)
+CM_T_BUT = np.matmul(CM_T_BUT, CM_BUT_correction)
 
 '''Pressing ON'''
 # Define approach
