@@ -80,12 +80,16 @@ target = RDK.Item('Home')   # existing target in station
 robot.setPoseFrame(world_frame)
 robot.setPoseTool(robot.PoseTool())
 
-# Define tool matrices
+# Define tool matricies
 pf1 = portafilter_tool('pf1')
 pf2 = portafilter_tool('pf2')
 gt_push = grinder_tool('push')
 gt_pull = grinder_tool('pull')
 cup_t = cup_tool();
+
+
+
+
 
 # Directly use the RDK Matrix object from to hold pose (its an HT)
 T_home = rdk.Mat([[     0.000000,     0.000000,     1.000000,   523.370000 ],
@@ -95,7 +99,7 @@ T_home = rdk.Mat([[     0.000000,     0.000000,     1.000000,   523.370000 ],
 
 
 '''Maths for Portafilter to grinder interaction'''
-# Finding angle z rotation of grinder frame to UR Frame = 135.204 deg z rot
+# Finding angle z rotation of ginder frame to UR Frame = 135.204 deg z rot
 ur_diff_gr_pf2 =  np.array([370.1, -322.5,65.9]) - np.array([482.7, -434.3, 317.3])
 theta_gr = np.rad2deg(np.arctan2(ur_diff_gr_pf2[1],ur_diff_gr_pf2[0]))
 
@@ -132,18 +136,25 @@ theta_tam = -np.rad2deg(np.arctan2(ur_diff_tam[2], ur_diff_tam[1]))
 UR_T_TAMb = transform_rotz(theta_tam_b, [600.1, 52.8, 254.5])
 TAM_b_T_TAM = transform_roty(theta_tam, [-80,0,-55])
 
-## Offset of tamper on approach + orientation
-tam_offset = [10, -5, -50]
-TAM_T_TAM_offset = np.array([[0, 1, 0, tam_offset[0]],
-                             [0, 0, 1, tam_offset[1]],
-                             [1, 0, 0, tam_offset[2]],
+## Offset of tapper on approach + orientation
+tam_offset1 = [10, -5, -50]
+tam_offset2 = [10, -5, -20]
+TAM_T_TAM_offset1 = np.array([[0, 1, 0, tam_offset1[0]],
+                             [0, 0, 1, tam_offset1[1]],
+                             [1, 0, 0, tam_offset1[2]],
+                             [0, 0, 0, 1]])
+
+TAM_T_TAM_offset2 = np.array([[0, 1, 0, tam_offset2[0]],
+                             [0, 0, 1, tam_offset2[1]],
+                             [1, 0, 0, tam_offset2[2]],
                              [0, 0, 0, 1]])
 
 # Final Matrix Calculations
 UR_T_TAM = np.matmul(UR_T_TAMb, TAM_b_T_TAM)
-UR_T_TAM_offset = np.matmul (UR_T_TAM, TAM_T_TAM_offset)
-T_TAM_np = np.matmul(UR_T_TAM_offset, pf1)
-
+UR_T_TAM_offset1 = np.matmul (UR_T_TAM, TAM_T_TAM_offset1)
+UR_T_TAM_offset2 = np.matmul (UR_T_TAM, TAM_T_TAM_offset2)
+T_TAM1_np = np.matmul(UR_T_TAM_offset1, pf1)
+T_TAM2_np = np.matmul(UR_T_TAM_offset2, pf1)
 
 
 '''Maths for portafilter to scraper interactions'''
@@ -152,16 +163,22 @@ TAM_b_T_SCR = transform_roty(theta_tam, [70,0,-32])
 
 # Defining Offset on scraper start
 scr_offset = [0, 50, -5]
-TAM_T_SCR_offset = np.array([[0, 1, 0, scr_offset[0]],
+TAM_T_SCR_offset1 = np.array([[0, 1, 0, scr_offset[0]],
                              [0, 0, 1, scr_offset[1]],
+                             [1, 0, 0, scr_offset[2]],
+                             [0, 0, 0, 1]])
+
+TAM_T_SCR_offset2 = np.array([[0, 1, 0, scr_offset[0]],
+                             [0, 0, 1, -scr_offset[1]],
                              [1, 0, 0, scr_offset[2]],
                              [0, 0, 0, 1]])
 
 # Final Matrix Calculations
 UR_T_SCR = np.matmul(UR_T_TAMb, TAM_b_T_SCR)
-UR_T_SCR_offset = np.matmul (UR_T_SCR, TAM_T_SCR_offset)
-T_SCR_np = np.matmul(UR_T_SCR_offset, pf1)
-
+UR_T_SCR_offset1 = np.matmul (UR_T_SCR, TAM_T_SCR_offset1)
+UR_T_SCR_offset2 = np.matmul (UR_T_SCR, TAM_T_SCR_offset2)
+T_SCR1_np = np.matmul(UR_T_SCR_offset1, pf1)
+T_SCR2_np = np.matmul(UR_T_SCR_offset2, pf1)
 
 '''Maths for portafilter to group head interactions'''
 # Finding rotation of tool stand frame
@@ -236,11 +253,13 @@ J_int_cup1 = [-112.500000, -76.850000, -78.630000, -114.590000, 89.440000, -205.
 J_int_cup2 = [-59.252173, -93.408148, -160.913903, 67.104091, 63.043985, -218.809144]
 J_int_cup_pickup = [-67.631873, -98.878992, -141.092600, 59.971592, 67.631873, -220.000000]
 
-# Convert np matrices to RDK matricies
+# Convert Matricies to RDK matricies
 T_PF2 = rdk.Mat(T_PF2_np.tolist())
 T_drop = rdk.Mat(T_drop_np.tolist())
-T_TAM = rdk.Mat(T_TAM_np.tolist())
-T_SCR = rdk.Mat(T_SCR_np.tolist())
+T_TAM1 = rdk.Mat(T_TAM1_np.tolist())
+T_TAM2 = rdk.Mat(T_TAM2_np.tolist())
+T_SCR1 = rdk.Mat(T_SCR1_np.tolist())
+T_SCR2 = rdk.Mat(T_SCR2_np.tolist())
 T_TOOL = rdk.Mat(T_TOOL_np.tolist())
 T_CUP = rdk.Mat(T_CUP_np.tolist())
 
@@ -272,14 +291,14 @@ RDK.RunProgram("Portafilter Tool Attach (Grinder)", True)
 robot.MoveJ(J_int_gr_app2, blocking=True)
 
 # Approach and use scraper
-robot.MoveL(T_SCR, blocking=True)
-robot.MoveJ(J_int_scr, blocking=True)
+robot.MoveL(T_SCR1, blocking=True)
+robot.MoveL(T_SCR2, blocking=True)
 
 # Approach and use tamper
 robot.MoveJ(J_int_tam_app1, blocking=True)
-robot.MoveL(T_TAM, blocking=True)
-robot.MoveJ(J_int_tam_press, blocking=True)
-robot.MoveL(T_TAM, blocking=True)
+robot.MoveL(T_TAM1, blocking=True)
+robot.MoveL(T_TAM2, blocking=True)
+robot.MoveL(T_TAM1, blocking=True)
 robot.MoveJ(J_int_tam_app1, blocking=True)
 
 # Approach and mount to group head
