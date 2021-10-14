@@ -144,7 +144,7 @@ UR_T_TAB_offset = np.matmul(UR_T_TAB, approach_offset)
 UR_T_TAB_PULL1 = np.matmul(UR_T_TAB, offset(0, 0, 10))
 
 # step 2, first contact
-UR_T_TAB_PULL2 = np.matmul(UR_T_TAB, offset(-10,0,0))
+UR_T_TAB_PULL2 = np.matmul(UR_T_TAB, offset(-5,0,0))
 
 # step 4, pull final location
 # final location in GM frame, relative to PULL2 position
@@ -154,7 +154,7 @@ radius = np.sqrt(GM_D_PULL2[0]**2 + GM_D_PULL2[1]**2)
 initial_angle = np.arctan2(GM_D_PULL2[0], GM_D_PULL2[1]) # wrt y-axis
 
 ''' turning angle '''
-turning_angle = 50 # assume 50 degree turn
+turning_angle = 57 # assume 57 degree turn
 final_angle = np.deg2rad(turning_angle) - np.abs(initial_angle) # wrt y-axis
 
 y_PULL4 = np.sqrt(radius**2/(1+np.tan(final_angle)**2))
@@ -261,7 +261,6 @@ J_int_CM = [-150.854031, -103.395493, -125.030703, 48.426196, 140.574931, -40.00
 # Run program module
 '''Grinder tool commands'''
 
-'''
 # Attach grinder tool
 robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
@@ -309,7 +308,6 @@ robot.MoveL(T_TAB_PULL1, blocking=True)
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
 robot.MoveJ(target, blocking=True)
-'''
 
 # Attach grinder tool
 robot.MoveJ(T_home, blocking=True)
@@ -335,3 +333,4 @@ robot.MoveL(T_BUT4_approach, blocking=True)
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
 robot.MoveJ(target, blocking=True)
+
