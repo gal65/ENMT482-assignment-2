@@ -335,8 +335,8 @@ robot.MoveJ(target, blocking=True)
 robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Portafilter Tool Attach (Tool Stand)", True)
-
-
+'''
+'''CAN RUN FROM HOME WITH PORTAFILTER TOOL ATTACHED'''
 # Move to Grinder and drop off tool, (works from home with filter attached)
 robot.MoveJ(J_int_to_gr, blocking=True)
 robot.MoveJ(J_int_gr_app1, blocking=True)
@@ -351,6 +351,7 @@ RDK.RunProgram("Portafilter Tool Detach (Grinder)", True)
 robot.MoveJ(J_int_gr_back, blocking=True)
 robot.MoveJ(target, blocking=True)
 
+''' TAMPER TEST FROM GRINDER PORTAFILTER UNCOMENT THIS SECTION TO TEST
 ##INSERT GRINDER TOOL USE
 
 # Reattach to portafilter and move away
@@ -368,7 +369,9 @@ robot.MoveL(T_TAM1, blocking=True)
 robot.MoveL(T_TAM2, blocking=True)
 robot.MoveL(T_TAM1, blocking=True)
 robot.MoveJ(J_int_tam_app1, blocking=True)
+'''
 
+''' GROUP HEAD TEST NOT SURE IF THIS CAN RUN FROM HOME
 # Approach and mount to group head
 robot.MoveJ(J_int_head_app1, blocking=True)
 robot.MoveJ(J_int_head_app2, blocking=True)
@@ -389,7 +392,7 @@ robot.MoveJ(target, blocking=True)
 '''
 
 ''' Start of Cup tool'''
-
+'''
 # Pick up cup tool
 robot.MoveJ(target, blocking=True)
 robot.MoveJ(T_home, blocking=True)
@@ -434,5 +437,5 @@ RDK.RunProgram("Cup Tool Open", True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Detach (Stand)", True)
 robot.MoveJ(target, blocking=True)
-
+'''
 
