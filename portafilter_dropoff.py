@@ -32,7 +32,7 @@ def transform_rotz(deg, translation_vector):
 # Tool position
 def grinder_tool(mode):
     # Grinder Tool frame in TCP frame
-    TCP_T_GT = transform_rotz(50, [0, 0, 0])
+    TCP_T_GT = transform_rotz(-50, [0, 0, 0])
     if (mode.lower() == 'push'):
         # PUSHy bit in Grinder Tool frame
         D_PUSH = [0, 0, 102.82]
@@ -108,7 +108,7 @@ UR_T_G = transform_rotz(theta_gr,[482.7,-432.1,316.1])
 G_T_PF2 = transform_roty(90 ,[157.61, 0, -250.45])
 
 ## IMPORTANT SET OFFSET OF APPROACH (FINE TUNING)
-PF2_T_offset = transform_rotz(0.5,[10,-10,0])
+PF2_T_offset = transform_rotz(0.05,[15,-5,0])
 
 # Portafilter to Grinder
 UR_T_PF2 = np.matmul(UR_T_G, G_T_PF2)
@@ -116,7 +116,7 @@ UR_T_PF2_offset = np.matmul(UR_T_PF2, PF2_T_offset)
 T_PF2_np = np.matmul(UR_T_PF2_offset, pf2)
 
 # Portafilter Grinder dropoff offset
-drop_T = transform_roty(-7.5, [-11,0,0])
+drop_T = transform_roty(-7.5, [-15,0,0])
 
 # Final Matrix Calculations
 drop_np = np.matmul(UR_T_PF2_offset,  drop_T)
@@ -192,7 +192,7 @@ offset_head2 = [0, 0, 40]
 
 TOOL_T_TOOL_offset1 = np.array([[0, 0, -1, 14.9 + offset_head1[0]],
                                [0, 1, 0, 64.9 + offset_head1[1]],
-                               [1, 0, 0, 167.0 + offset_head1[2]],
+                               [1, 0, 0, 214.0 + offset_head1[2]],
                                [0, 0, 0, 1]])
 
 TOOL_T_TOOL_offset2 = np.array([[0, 0, -1, 14.9 + offset_head2[0]],
@@ -207,12 +207,15 @@ T_TOOL_ON_np = np.matmul(UR_T_TOOL_offset2, pf1)
 T_TOOL_ROT = np.matmul(UR_T_TOOL_offset2, transform_rotx(30, [0,0,0]))
 T_TOOL_ROT_np = np.matmul(T_TOOL_ROT, pf1)
 
+
 '''Maths for cup tool interaction'''
 # Defining transforms for cup holder frame
 UR_T_CUP_b = transform_rotz(0, [-1.1, -600.8, -20])
 CUP_b_T_CUP = offset(0, 0, 180)
+CUP_b_T_DEL = offset(0, 0, 217)
 cup_offset = [0,0,10]
 cup_up = [0,0,220]
+del_offset = [0,0,82]
 
 CUP_T_CUP_offset = np.array([[0, 1, 0, cup_offset[0]],
                              [0, 0, -1, cup_offset[1]],
@@ -224,18 +227,42 @@ CUP_T_CUP_up = np.array(    [[0, 1, 0, cup_up[0] + cup_offset[0]],
                              [-1, 0, 0, cup_up[2] + cup_offset[2]],
                              [0, 0, 0, 1]])
 
+DEL_T_DEL_offset = np.array([[0, -1, 0, del_offset[0]],
+                             [0, 0, -1, del_offset[1]],
+                             [1, 0, 0,  del_offset[2]],
+                             [0, 0, 0, 1]])
 
 
+# Cup pickup
 UR_T_CUP = np.matmul(UR_T_CUP_b, CUP_b_T_CUP)
 UR_T_CUP_offset = np.matmul(UR_T_CUP, CUP_T_CUP_offset)
 
 UR_T_CUP_UP = np.matmul(UR_T_CUP, CUP_T_CUP_up)
+# Final delivery
+UR_T_DEL = np.matmul(UR_T_CUP_b, CUP_b_T_DEL)
+UR_T_DEL_offset = np.matmul(UR_T_DEL, DEL_T_DEL_offset)
+
 
 T_CUP_UP_np = np.matmul(UR_T_CUP_UP, cup_t)
 T_CUP_np = np.matmul(UR_T_CUP_offset, cup_t)
 
+T_CUP_DEL_np = np.matmul(UR_T_DEL_offset, cup_t)
 
+# Defining transforms for coffee machine frame
+D_CM = [-368.4, -389, 350.6]
+UR_T_CM = transform_rotz(104.7209, D_CM)
+coffee_cup_offset = [0, 0, 80]
+CM_T_Base_offset = transform_rotz(-45,[-12.68+coffee_cup_offset[0],72+coffee_cup_offset[1],-290+coffee_cup_offset[2]])
 
+Base_offset_T_CM_Cup = np.array([[0, 0, -1, 0],
+                              [0, 1, 0, 0],
+                              [1, 0, 0, 0],
+                              [0, 0, 0, 1]])
+
+UR_T_CM_T_Base_offset = np.matmul(UR_T_CM, CM_T_Base_offset)
+UR_T_CM_CUP = np.matmul(UR_T_CM_T_Base_offset, Base_offset_T_CM_Cup)
+T_CM_CUP_np = np.matmul(UR_T_CM_CUP, cup_t)
+                              
 '''Intermediate points to avoid collisions'''
 
 # Home to toolstand for tool bit change
@@ -247,7 +274,7 @@ J_int_to_gr = [-83.570000, -80.360000, -80.360000, -113.650000, 89.500000, -189.
 # Approach to Grinder
 J_int_gr_app1 = [-19.201600, -53.189157, -138.267149, -175.169392, -71.128105, -235.889759]
 J_int_gr_app2 = [0.242289, -76.052063, -150.045531, -133.902406, -44.961973, -219.500000]
-J_int_gr_back = [-14.304299, -77.363544, -131.805262, -142.140115, -58.785872, -225.158187]
+J_int_gr_back = [-8.399013, -80.379436, -145.968851, -124.333587, -52.953150, -226.274286]
 
 # Approach and use Scraper
 J_int_scr = [1.350562, -84.577835, -133.368424, -134.568357, -103.198280, -232.058700]
@@ -276,8 +303,9 @@ J_int_cup2 = [-53.959522, -75.614552, -153.665357, -131.949195, -53.959522, -40.
 J_int_cupback = [-53.998442, -53.866255, -111.676612, -194.457133, -53.998442, -218.749995]
 
 # Approach Coffee Machine
-J_int_coffee = [-85.597068, -50.583474, -148.299190, -161.095235, -45.597068, -218.743190]
+J_int_coffee = [-139.463417, -69.590835, -142.119514, -148.289651, -109.184317, -220.000000]
 
+'''RDK Conversion '''
 # Convert Matricies to RDK matricies
 T_PF2 = rdk.Mat(T_PF2_np.tolist())
 T_drop = rdk.Mat(T_drop_np.tolist())
@@ -294,30 +322,36 @@ T_TOOL_ROT = rdk.Mat(T_TOOL_ROT_np.tolist())
 
 T_CUP = rdk.Mat(T_CUP_np.tolist())
 T_CUP_UP = rdk.Mat(T_CUP_UP_np.tolist())
+T_CM_CUP = rdk.Mat(T_CM_CUP_np.tolist())
+T_CUP_DEL = rdk.Mat(T_CUP_DEL_np.tolist())
 
 # Run program Module
+robot.MoveJ(target, blocking=True)
 
-'''Portafilter commands'''
-
-# Mount portafilter tool
+''' Portafilter commands '''
 '''
+# Mount portafilter tool
+
 robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Portafilter Tool Attach (Tool Stand)", True)
 
-# Move to Grinder and drop off tool
+
+# Move to Grinder and drop off tool, (works from home with filter attached)
 robot.MoveJ(J_int_to_gr, blocking=True)
 robot.MoveJ(J_int_gr_app1, blocking=True)
 robot.MoveJ(J_int_gr_app2, blocking=True)
+
 robot.MoveL(T_PF2, blocking=True)
 robot.MoveL(T_drop, blocking=True)
 
 RDK.RunProgram("Portafilter Tool Detach (Grinder)", True)
 
-#Back away from portafilter and 
+#Back away from portafilter and return to home
 robot.MoveJ(J_int_gr_back, blocking=True)
 robot.MoveJ(target, blocking=True)
 
+##INSERT GRINDER TOOL USE
 
 # Reattach to portafilter and move away
 robot.MoveJ(J_int_gr_back, blocking=True)
@@ -326,7 +360,6 @@ robot.MoveJ(J_int_gr_app2, blocking=True)
 
 # Approach and use scraper
 robot.MoveL(T_SCR1, blocking=True)
-
 robot.MoveL(T_SCR2, blocking=True)
 
 # Approach and use tamper
@@ -335,7 +368,6 @@ robot.MoveL(T_TAM1, blocking=True)
 robot.MoveL(T_TAM2, blocking=True)
 robot.MoveL(T_TAM1, blocking=True)
 robot.MoveJ(J_int_tam_app1, blocking=True)
-
 
 # Approach and mount to group head
 robot.MoveJ(J_int_head_app1, blocking=True)
@@ -351,9 +383,12 @@ robot.MoveJ(J_int_porta_final, blocking=True)
 #robot.MoveJ(J_int_porta_final2, blocking=True)
 
 # Put Portafilter back on rack
+robot.MoveJ(target, blocking=True)
 RDK.RunProgram("Portafilter Tool Detach (Tool Stand)", True)
 robot.MoveJ(target, blocking=True)
 '''
+
+''' Start of Cup tool'''
 
 # Pick up cup tool
 robot.MoveJ(target, blocking=True)
@@ -361,22 +396,43 @@ robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Attach (Stand)", True)
 
-# Approach cup
-
+# Pick up cup
 robot.MoveJ(J_int_cup1, blocking=True)
-
 robot.MoveJ(J_int_cup2, blocking=True)
-
 RDK.RunProgram("Cup Tool Open", True)
 robot.MoveL(T_CUP, blocking=True)
-
 RDK.RunProgram("Cup Tool Close", True)
 robot.MoveL(T_CUP_UP, blocking=True)
 
+#Put cup to coffee machine
 robot.MoveJ(J_int_cupback, blocking=True)
 robot.MoveJ(J_int_coffee, blocking=True)
-'''
+robot.MoveL(T_CM_CUP, blocking=True)
+RDK.RunProgram("Cup Tool Open", True)
+robot.MoveJ(J_int_coffee, blocking=True)
+robot.MoveJ(J_int_cupback, blocking=True)
+RDK.RunProgram("Cup Tool Close", True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Detach (Stand)", True)
 robot.MoveJ(target, blocking=True)
-'''
+
+##INSERT COFFEE MACHINE BUTTON PUSH
+
+# Coffee delivery
+RDK.RunProgram("Cup Tool Attach (Stand)", True)
+robot.MoveJ(J_int_cupback, blocking=True)
+RDK.RunProgram("Cup Tool Open", True)
+robot.MoveJ(J_int_coffee, blocking=True)
+robot.MoveL(T_CM_CUP, blocking=True)
+RDK.RunProgram("Cup Tool Close", True)
+robot.MoveJ(J_int_coffee, blocking=True)
+robot.MoveJ(J_int_cupback, blocking=True)
+robot.MoveL(T_CUP_DEL, blocking=True)
+RDK.RunProgram("Cup Tool Open", True)
+
+# Final Deattach
+robot.MoveJ(J_int_tool, blocking=True)
+RDK.RunProgram("Cup Tool Detach (Stand)", True)
+robot.MoveJ(target, blocking=True)
+
+
