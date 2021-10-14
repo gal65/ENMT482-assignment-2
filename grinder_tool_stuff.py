@@ -252,7 +252,7 @@ T_BUT4_press = rdk.Mat(T_BUT4_press_np.tolist())
 # Home to toolstand for tool bit change
 J_int_tool = [-138.210000, -70.710000, -86.790000, -106.070000, 90.000000, 0.000000]
 
-# BUT1 approach joint angles
+# Waypoint joint angles
 J_int_over_cup = [86.790000, -67.500000, 80.360000, -21.480000, -18.060000, 65.240000]
 J_int_BUT = [97.640000, -57.860000, 73.930000, -21.480000, -18.060000, 65.250000]
 J_int_TAB = [-61.070000, -106.070000, -96.430000, -154.290000, 260.360000, -132.000000]
