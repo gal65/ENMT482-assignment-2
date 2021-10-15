@@ -4,7 +4,6 @@ import robolink as rl    # RoboDK API
 import robodk as rdk     # Robot toolbox
 from time import sleep
 
-# Transforms (this is out-dated, rad is now np.deg2rad(deg))
 def transform_rotx(deg, translation_vector):
     transform_matrix = [[1, 0, 0, translation_vector[0]],
                         [0, np.cos(np.deg2rad(deg)), -np.sin(np.deg2rad(deg)), translation_vector[1]],
@@ -133,7 +132,7 @@ GM_T_TAB = np.matmul(GM_T_TAB, transform_roty(15, [0,0,0])) # could be atan(35.8
 UR_T_TAB = np.matmul(UR_T_GM, GM_T_TAB)
 
 ''' TAB OFFSET '''
-TAB_OFFSET = offset(0, -20, 0)
+TAB_OFFSET = offset(0, -30, 0)
 UR_T_TAB = np.matmul(UR_T_TAB, TAB_OFFSET)
 
 # Approach offset
@@ -154,7 +153,7 @@ radius = np.sqrt(GM_D_PULL2[0]**2 + GM_D_PULL2[1]**2)
 initial_angle = np.arctan2(GM_D_PULL2[0], GM_D_PULL2[1]) # wrt y-axis
 
 ''' turning angle '''
-turning_angle = 57 # assume 57 degree turn
+turning_angle = 60 # more than 60!
 final_angle = np.deg2rad(turning_angle) - np.abs(initial_angle) # wrt y-axis
 
 y_PULL4 = np.sqrt(radius**2/(1+np.tan(final_angle)**2))
@@ -201,8 +200,8 @@ CM_D_BUT = [50.67, 35.25, -27.89]
 CM_T_BUT = transform_roty(90, CM_D_BUT)
 CM_T_BUT = np.matmul(CM_T_BUT, transform_rotx(-25,[0,0,0]))
 
-# Correction offset for CM ON button
-CM_BUT_correction = offset(0,0,0)
+# Correction offset for CM button
+CM_BUT_correction = offset(7,0,0)
 CM_T_BUT = np.matmul(CM_T_BUT, CM_BUT_correction)
 
 '''Pressing ON'''
@@ -221,7 +220,7 @@ T_BUT3_press_np = np.matmul(CM_ON_np, gt_push)
 
 '''Pressing OFF'''
 # Define approach
-CM_T_BUT4_approach = np.matmul(CM_T_BUT, offset(-20, 0, -40))
+CM_T_BUT4_approach = np.matmul(CM_T_BUT, offset(-13, 0, -40))
 UR_T_BUT4_approach = np.matmul(UR_T_CM, CM_T_BUT4_approach)
 T_BUT4_approach_np = np.matmul(UR_T_BUT4_approach,gt_push)
 
@@ -288,7 +287,7 @@ robot.MoveL(T_BUT2, blocking=True)
 # robot.MoveJ(J_int_tool, blocking=True)
 '''
 
-# GRINDER TAB (for testing)
+'''# GRINDER TAB (for testing)
 # Move to grinder machine tab
 robot.MoveJ(J_int_TAB, blocking=True)
 robot.MoveL(T_TAB_approach, blocking=True)
@@ -307,7 +306,7 @@ robot.MoveL(T_TAB_PULL4, blocking=True)
 robot.MoveL(T_TAB_PULL3, blocking=True)
 robot.MoveL(T_TAB_PULL2, blocking=True)
 robot.MoveL(T_TAB_PULL1, blocking=True)
-
+'''
 '''
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
@@ -319,7 +318,7 @@ robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 '''
 
-'''# COFFEE MACHINE BUTTON PRESS (for testing)
+# COFFEE MACHINE BUTTON PRESS (for testing)
 # Move to coffee machine 
 robot.MoveJ(J_int_CM,blocking=True)
 
@@ -335,7 +334,7 @@ sleep(2)
 robot.MoveL(T_BUT4_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT4_approach, blocking=True)
-'''
+
 
 '''
 # Detach grinder and return home

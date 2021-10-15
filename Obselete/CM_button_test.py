@@ -48,13 +48,13 @@ T_grinderapproach = rdk.Mat(T_grinderapproach_np.tolist())
 
 
 robot.MoveJ(T_home, blocking=True)
-RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
+#RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 #robot.MoveJ(J_intermediatepoint, blocking=True)
 robot.MoveL(T_grinderapproach, blocking=True)
 sleep(1)
-RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
+#RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
 sleep(1)
-
+RDK.RunProgram("go_home", True)
 
 # Note that you MUST use the following syntax when calling tool routines
 # RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
@@ -62,6 +62,6 @@ sleep(1)
 
 
 # and... move home to an existing target
-robot.MoveJ(target)
+#robot.MoveJ(target)
 
 
