@@ -266,6 +266,7 @@ robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 
+'''# GRINDER BUTTON PRESS (for testing)
 # Move to grinder machine button
 robot.MoveJ(J_int_over_cup, blocking=True)
 robot.MoveJ(J_int_BUT, blocking=True)
@@ -278,14 +279,16 @@ robot.MoveL(T_BUT1, blocking=True)
 
 # Perform OFF button press
 robot.MoveL(T_BUT2, blocking=True)
-sleep(5) # wait for grinder to finish
+sleep(3) # wait for grinder to finish
 robot.MoveL(T_BUT2_press, blocking=True)
-sleep(1)
+# sleep(1)
 robot.MoveL(T_BUT2, blocking=True)
-sleep(1)
-robot.MoveJ(J_int_over_cup, blocking=True)
-robot.MoveJ(J_int_tool, blocking=True)
+# sleep(1)
+# robot.MoveJ(J_int_over_cup, blocking=True)
+# robot.MoveJ(J_int_tool, blocking=True)
+'''
 
+# GRINDER TAB (for testing)
 # Move to grinder machine tab
 robot.MoveJ(J_int_TAB, blocking=True)
 robot.MoveL(T_TAB_approach, blocking=True)
@@ -305,6 +308,7 @@ robot.MoveL(T_TAB_PULL3, blocking=True)
 robot.MoveL(T_TAB_PULL2, blocking=True)
 robot.MoveL(T_TAB_PULL1, blocking=True)
 
+'''
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
 robot.MoveJ(target, blocking=True)
@@ -313,24 +317,28 @@ robot.MoveJ(target, blocking=True)
 robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
+'''
 
+'''# COFFEE MACHINE BUTTON PRESS (for testing)
 # Move to coffee machine 
 robot.MoveJ(J_int_CM,blocking=True)
 
 # Coffee machine ON
 robot.MoveL(T_BUT3_approach, blocking=True)
 robot.MoveL(T_BUT3_press, blocking=True)
-sleep(1)
+# sleep(1)
 robot.MoveL(T_BUT3_approach, blocking=True)
 
 # Coffee machine OFF
 robot.MoveL(T_BUT4_approach, blocking=True)
 sleep(2)
 robot.MoveL(T_BUT4_press, blocking=True)
-sleep(1)
+# sleep(1)
 robot.MoveL(T_BUT4_approach, blocking=True)
+'''
 
+'''
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
 robot.MoveJ(target, blocking=True)
-
+'''
