@@ -5,7 +5,6 @@ import numpy as np
 import robolink as rl    # RoboDK API
 import robodk as rdk     # Robot toolbox
 
-# Transforms (this is out-dated, rad is now np.deg2rad(deg))
 def transform_rotx(deg, translation_vector):
     transform_matrix = [[1, 0, 0, translation_vector[0]],
                         [0, np.cos(np.deg2rad(deg)), -np.sin(np.deg2rad(deg)), translation_vector[1]],
@@ -26,8 +25,6 @@ def transform_rotz(deg, translation_vector):
                         [0, 0, 1, translation_vector[2]],
                         [0, 0, 0, 1]]
     return transform_matrix
-
-
 
 # Tool position
 def grinder_tool(mode):

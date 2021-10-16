@@ -25,6 +25,7 @@ def transform_rotz(deg, translation_vector):
                         [0, 0, 0, 1]]
     return transform_matrix
 
+# this assumes a ZYZ Euler angle rotation representation I think
 def ultimate_rotation(alpha,beta,gamma,translation_vector):
     transform_matrix = [[np.cos(np.deg2rad(alpha))*np.cos(np.deg2rad(beta)),
                          np.cos(np.deg2rad(alpha))*np.sin(np.deg2rad(beta))*np.sin(np.deg2rad(gamma)) - np.sin(np.deg2rad(alpha))*np.cos(np.deg2rad(gamma)),
@@ -78,7 +79,7 @@ T_home = rdk.Mat([[     0.000000,     0.000000,     1.000000,   523.370000 ],
       [0.000000,     0.000000,     0.000000,     1.000000 ]])
 
 '''Maths for grinder tool interactions'''
-''' Grinder machine ON button '''
+''' Grinder machine ON button (VERIFIED)'''
 # Finding angle z rotation of grinder frame to UR Frame = 135.204 deg z rot
 ur_diff_gr_pf2 =  np.array([370.1, -322.5,65.9]) - np.array([482.7, -434.3, 317.3])
 theta_gr = np.rad2deg(np.arctan2(ur_diff_gr_pf2[1],ur_diff_gr_pf2[0]))
@@ -94,26 +95,26 @@ UR_T_BUT1 = np.matmul(UR_T_GM, GM_T_BUT1)
 UR_T_BUT1_offset = np.matmul(UR_T_BUT1, BUT1_T_offset)
 
 # Press ON
-BUT1_press = offset(0,0,51)
+BUT1_press = offset(0,0,48) # changed from 51 to 48 to push less
 
 # Final matrix calcs
 T_BUT1_np = np.matmul(UR_T_BUT1_offset, gt_push)
 GM_ON_np = np.matmul(UR_T_BUT1_offset, BUT1_press)
 T_BUT1_press_np = np.matmul(GM_ON_np, gt_push)
 
-''' Grinder machine OFF button '''
+''' Grinder machine OFF button (VERIFIED)'''
 # Finding angle z rotation of grinder frame to UR Frame = 135.204 deg z rot
 D_BUT2 = [-80.71, 90.26, -227.68]
 GM_T_BUT2 = transform_rotx(90, D_BUT2)
 GM_T_BUT2 = np.matmul(GM_T_BUT2, transform_roty(5, [-1,0,0])) # assuming OFF button is on 5 deg angle from y-axis of GM
 
 # Approach offset
-BUT2_T_offset = offset(0, 0, -51)
+BUT2_T_offset = offset(0, 0, -51) 
 UR_T_BUT2 = np.matmul(UR_T_GM, GM_T_BUT2)
 UR_T_BUT2_offset = np.matmul(UR_T_BUT2, BUT2_T_offset)
 
 # Press OFF
-BUT2_press = offset(0,0,48)
+BUT2_press = offset(0,0,45) # changed from 48 to 51 to push less
 
 # Final matrix calcs
 T_BUT2_np = np.matmul(UR_T_BUT2_offset, gt_push)
@@ -153,7 +154,7 @@ radius = np.sqrt(GM_D_PULL2[0]**2 + GM_D_PULL2[1]**2)
 initial_angle = np.arctan2(GM_D_PULL2[0], GM_D_PULL2[1]) # wrt y-axis
 
 ''' turning angle '''
-turning_angle = 60 # more than 60!
+turning_angle = 63.5 ''' NEED TO TEST BUT SHOULD BE RIGHT '''
 final_angle = np.deg2rad(turning_angle) - np.abs(initial_angle) # wrt y-axis
 
 y_PULL4 = np.sqrt(radius**2/(1+np.tan(final_angle)**2))
@@ -204,7 +205,7 @@ CM_T_BUT = np.matmul(CM_T_BUT, transform_rotx(-25,[0,0,0]))
 CM_BUT_correction = offset(7,0,0)
 CM_T_BUT = np.matmul(CM_T_BUT, CM_BUT_correction)
 
-'''Pressing ON'''
+'''Pressing ON (VERIFIED)'''
 # Define approach
 CM_T_BUT3_approach = np.matmul(CM_T_BUT, offset(0, 0, -40))
 UR_T_BUT3_approach = np.matmul(UR_T_CM, CM_T_BUT3_approach)
@@ -220,7 +221,8 @@ T_BUT3_press_np = np.matmul(CM_ON_np, gt_push)
 
 '''Pressing OFF'''
 # Define approach
-CM_T_BUT4_approach = np.matmul(CM_T_BUT, offset(-13, 0, -40))
+'''X VALUE CHANGED FROM -20 TO -13, NEEDS CHECKING) '''
+CM_T_BUT4_approach = np.matmul(CM_T_BUT, offset(-13, 0, -40)) 
 UR_T_BUT4_approach = np.matmul(UR_T_CM, CM_T_BUT4_approach)
 T_BUT4_approach_np = np.matmul(UR_T_BUT4_approach,gt_push)
 
