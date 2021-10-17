@@ -105,7 +105,7 @@ UR_T_G = transform_rotz(theta_gr,[482.7,-432.1,316.1])
 G_T_PF2 = transform_roty(90 ,[157.61, 0, -250.45])
 
 ## IMPORTANT SET OFFSET OF APPROACH (FINE TUNING)
-PF2_T_offset = transform_rotz(0.05,[15,-2,0])
+PF2_T_offset = transform_rotx(0.5,[15,-5,0])
 
 # Portafilter to Grinder
 UR_T_PF2 = np.matmul(UR_T_G, G_T_PF2)
