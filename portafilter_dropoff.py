@@ -86,7 +86,7 @@ gt_pull = grinder_tool('pull')
 cup_t = cup_tool();
 
 
-# Directly use the RDK Matrix object from to hold pose (its an HT)
+# Directly use the RDK Matrix object from to hold pose (its a HT)
 T_home = rdk.Mat([[     0.000000,     0.000000,     1.000000,   523.370000 ],
      [-1.000000,     0.000000,     0.000000,  -109.000000 ],
      [-0.000000,    -1.000000,     0.000000,   607.850000 ],

@@ -280,8 +280,7 @@ robot.MoveL(T_BUT1, blocking=True)
 
 # Perform OFF button press
 robot.MoveL(T_BUT2, blocking=True)
-# sleep(3) # wait for grinder to finish
-rdk.Pause(3000)
+sleep(3) # wait for grinder to finish
 robot.MoveL(T_BUT2_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT2, blocking=True)
@@ -333,8 +332,7 @@ robot.MoveL(T_BUT3_approach, blocking=True)
 
 # Coffee machine OFF
 robot.MoveL(T_BUT4_approach, blocking=True)
-# sleep(2)
-rdk.Pause(3000)
+sleep(3)
 robot.MoveL(T_BUT4_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT4_approach, blocking=True)
