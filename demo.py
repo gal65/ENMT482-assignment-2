@@ -30,7 +30,7 @@ def transform_rotz(deg, translation_vector):
 # Tool transforms (return inverses)
 def grinder_tool(mode):
     # Grinder Tool frame in TCP frame
-    TCP_T_GT = transform_rotz(50, [0, 0, 0])
+    TCP_T_GT = transform_rotz(-50, [0, 0, 0])
     if (mode.lower() == 'push'):
         # PUSHy bit in Grinder Tool frame
         D_PUSH = [0, 0, 102.82]
@@ -269,7 +269,7 @@ UR_T_BUT1 = np.matmul(UR_T_GM, GM_T_BUT1)
 UR_T_BUT1_offset = np.matmul(UR_T_BUT1, BUT1_T_offset)
 
 # Press ON
-BUT1_press = offset(0,0,48) # changed from 51 to 48 to push less
+BUT1_press = offset(0,0,49) # changed from 51 
 
 # Final matrix calcs
 T_BUT1_np = np.matmul(UR_T_BUT1_offset, gt_push)
@@ -288,7 +288,7 @@ UR_T_BUT2 = np.matmul(UR_T_GM, GM_T_BUT2)
 UR_T_BUT2_offset = np.matmul(UR_T_BUT2, BUT2_T_offset)
 
 # Press OFF
-BUT2_press = offset(0,0,45) # changed from 48 to 51 to push less
+BUT2_press = offset(0,0,46) # changed from 48
 
 # Final matrix calcs
 T_BUT2_np = np.matmul(UR_T_BUT2_offset, gt_push)
@@ -492,7 +492,10 @@ J_int_TAB = [-61.070000, -106.070000, -96.430000, -154.290000, 260.360000, -132.
 # Coffee Machine button approach
 J_int_CM = [-150.854031, -103.395493, -125.030703, 48.426196, 140.574931, -40.000000]
 
-# Run program Module
+
+
+''' Run program Module '''
+# Start from home
 robot.MoveJ(target, blocking=True)
 
 ''' Portafilter commands '''
@@ -516,8 +519,7 @@ RDK.RunProgram("Portafilter Tool Detach (Grinder)", True)
 robot.MoveJ(J_int_gr_back, blocking=True)
 robot.MoveJ(target, blocking=True)
 
-
-''' Grinder Tool '''
+# Grinder Tool 
 # Attach grinder tool
 robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
@@ -596,9 +598,8 @@ robot.MoveJ(J_int_porta_final, blocking=True)
 sleep(5)
 
 '''Cup Tool Commands'''
-# Pick up cup tool
-robot.MoveJ(target, blocking=True)
-robot.MoveJ(T_home, blocking=True)
+# Attach cup tool
+robot.MoveJ(J_int_coffee, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Attach (Stand)", True)
 
@@ -610,7 +611,7 @@ robot.MoveL(T_CUP, blocking=True)
 RDK.RunProgram("Cup Tool Close", True)
 robot.MoveL(T_CUP_UP, blocking=True)
 
-#Put cup to coffee machine and return home
+# Put cup to coffee machine
 robot.MoveJ(J_int_cupback, blocking=True)
 robot.MoveJ(J_int_coffee, blocking=True)
 robot.MoveL(T_CM_CUP, blocking=True)
@@ -620,11 +621,11 @@ robot.MoveJ(J_int_cupback, blocking=True)
 RDK.RunProgram("Cup Tool Close", True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Detach (Stand)", True)
-robot.MoveJ(target, blocking=True)
+#robot.MoveJ(target, blocking=True)
 
 # COFFEE MACHINE BUTTON PRESSES 
 # Attach grinder tool
-robot.MoveJ(T_home, blocking=True)
+#robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 
@@ -642,13 +643,13 @@ sleep(3)
 robot.MoveL(T_BUT4_press, blocking=True)
 robot.MoveL(T_BUT4_approach, blocking=True)
 
-# Detach grinder and return home
+# Detach grinder tool 
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
-robot.MoveJ(target, blocking=True)
+#robot.MoveJ(target, blocking=True)
 
 # Final Pickup and Coffee Delivery
+robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Attach (Stand)", True)
-
 robot.MoveJ(J_int_cupback, blocking=True)
 RDK.RunProgram("Cup Tool Open", True)
 robot.MoveJ(J_int_coffee, blocking=True)
@@ -658,3 +659,10 @@ robot.MoveJ(J_int_coffee, blocking=True)
 robot.MoveJ(J_int_cupback, blocking=True)
 robot.MoveL(T_CUP_DEL, blocking=True)
 RDK.RunProgram("Cup Tool Open", True)
+# TODO: - Back away from cup
+#       - Detach Cup Tool
+#       - Go Home
+#robot.MoveJ(J_int_cup_backoff, blocking=True)
+#robot.MoveJ(J_int_tool, blocking=True)
+#RDK.RunProgram("Cup Tool Detach (Stand)", True)
+#robot.MoveJ(target, blocking=True)

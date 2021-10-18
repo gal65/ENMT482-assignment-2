@@ -95,7 +95,7 @@ UR_T_BUT1 = np.matmul(UR_T_GM, GM_T_BUT1)
 UR_T_BUT1_offset = np.matmul(UR_T_BUT1, BUT1_T_offset)
 
 # Press ON
-BUT1_press = offset(0,0,48) # changed from 51 to 48 to push less
+BUT1_press = offset(0,0,51) 
 
 # Final matrix calcs
 T_BUT1_np = np.matmul(UR_T_BUT1_offset, gt_push)
@@ -114,7 +114,7 @@ UR_T_BUT2 = np.matmul(UR_T_GM, GM_T_BUT2)
 UR_T_BUT2_offset = np.matmul(UR_T_BUT2, BUT2_T_offset)
 
 # Press OFF
-BUT2_press = offset(0,0,45) # changed from 48 to 51 to push less
+BUT2_press = offset(0,0,48) 
 
 # Final matrix calcs
 T_BUT2_np = np.matmul(UR_T_BUT2_offset, gt_push)
@@ -202,7 +202,7 @@ CM_T_BUT = transform_roty(90, CM_D_BUT)
 CM_T_BUT = np.matmul(CM_T_BUT, transform_rotx(-25,[0,0,0]))
 
 # Correction offset for CM button
-CM_BUT_correction = offset(7,0,0)
+CM_BUT_correction = offset(7,0,0) 
 CM_T_BUT = np.matmul(CM_T_BUT, CM_BUT_correction)
 
 '''Pressing ON (VERIFIED)'''
@@ -288,7 +288,7 @@ robot.MoveL(T_BUT2, blocking=True)
 # robot.MoveJ(J_int_over_cup, blocking=True)
 # robot.MoveJ(J_int_tool, blocking=True)
 '''
-
+'''
 # GRINDER TAB (for testing)
 # Move to grinder machine tab
 robot.MoveJ(J_int_TAB, blocking=True)
@@ -308,7 +308,7 @@ robot.MoveL(T_TAB_PULL4, blocking=True)
 robot.MoveL(T_TAB_PULL3, blocking=True)
 robot.MoveL(T_TAB_PULL2, blocking=True)
 robot.MoveL(T_TAB_PULL1, blocking=True)
-
+'''
 '''
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
@@ -319,7 +319,7 @@ robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 '''
-'''
+
 # COFFEE MACHINE BUTTON PRESS (for testing)
 # Move to coffee machine 
 robot.MoveJ(J_int_CM,blocking=True)
@@ -336,7 +336,7 @@ sleep(3)
 robot.MoveL(T_BUT4_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT4_approach, blocking=True)
-'''
+
 
 '''
 # Detach grinder and return home
