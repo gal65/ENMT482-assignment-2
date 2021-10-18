@@ -289,7 +289,7 @@ robot.MoveL(T_BUT2, blocking=True)
 # robot.MoveJ(J_int_tool, blocking=True)
 '''
 
-'''# GRINDER TAB (for testing)
+# GRINDER TAB (for testing)
 # Move to grinder machine tab
 robot.MoveJ(J_int_TAB, blocking=True)
 robot.MoveL(T_TAB_approach, blocking=True)
@@ -308,7 +308,7 @@ robot.MoveL(T_TAB_PULL4, blocking=True)
 robot.MoveL(T_TAB_PULL3, blocking=True)
 robot.MoveL(T_TAB_PULL2, blocking=True)
 robot.MoveL(T_TAB_PULL1, blocking=True)
-'''
+
 '''
 # Detach grinder and return home
 RDK.RunProgram("Grinder Tool Detach (Tool Stand)", True)
@@ -319,7 +319,7 @@ robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Grinder Tool Attach (Tool Stand)", True)
 '''
-
+'''
 # COFFEE MACHINE BUTTON PRESS (for testing)
 # Move to coffee machine 
 robot.MoveJ(J_int_CM,blocking=True)
@@ -336,7 +336,7 @@ sleep(2)
 robot.MoveL(T_BUT4_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT4_approach, blocking=True)
-
+'''
 
 '''
 # Detach grinder and return home

@@ -105,7 +105,7 @@ UR_T_G = transform_rotz(theta_gr,[482.7,-432.1,316.1])
 G_T_PF2 = transform_roty(90 ,[157.61, 0, -250.45])
 
 ## IMPORTANT SET OFFSET OF APPROACH (FINE TUNING)
-PF2_T_offset = transform_rotz(0.05,[15,-3,0])
+PF2_T_offset = transform_rotz(0.05,[15,0,0])
 
 # Portafilter to Grinder
 UR_T_PF2 = np.matmul(UR_T_G, G_T_PF2)
@@ -249,7 +249,7 @@ T_CUP_DEL_np = np.matmul(UR_T_DEL_offset, cup_t)
 D_CM = [-368.4, -389, 350.6]
 UR_T_CM = transform_rotz(104.7209, D_CM)
 coffee_cup_offset = [0, 0, 80]
-CM_T_Base_offset = transform_rotz(-45,[-12.68+coffee_cup_offset[0],72+coffee_cup_offset[1],-290+coffee_cup_offset[2]])
+CM_T_Base_offset = transform_rotz(-60,[-12.68+coffee_cup_offset[0],72+coffee_cup_offset[1],-290+coffee_cup_offset[2]])
 
 Base_offset_T_CM_Cup = np.array([[0, 0, -1, 0],
                               [0, 1, 0, 0],
@@ -350,7 +350,7 @@ RDK.RunProgram("Portafilter Tool Detach (Grinder)", True)
 robot.MoveJ(J_int_gr_back, blocking=True)
 robot.MoveJ(target, blocking=True)
 
-
+'''
 #TAMPER TEST FROM GRINDER PORTAFILTER UNCOMENT THIS SECTION TO TEST
 
 # Reattach to portafilter and move away
@@ -384,7 +384,7 @@ robot.MoveL(T_TOOL, blocking=True)
 # Pull out portafilter and bring near coffee machine
 robot.MoveJ(J_int_porta_final, blocking=True)
 #robot.MoveJ(J_int_porta_final2, blocking=True)
-
+'''
 
 ''' Start of Cup tool'''
 '''
@@ -394,8 +394,8 @@ robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Attach (Stand)", True)
 '''
-
-''' CUP TOOL TEST
+'''
+#CUP TOOL TEST
 # Pick up cup
 robot.MoveJ(J_int_cup1, blocking=True)
 robot.MoveJ(J_int_cup2, blocking=True)
