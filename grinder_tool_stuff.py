@@ -154,7 +154,7 @@ radius = np.sqrt(GM_D_PULL2[0]**2 + GM_D_PULL2[1]**2)
 initial_angle = np.arctan2(GM_D_PULL2[0], GM_D_PULL2[1]) # wrt y-axis
 
 ''' turning angle '''
-turning_angle = 63.5 # NEED TO TEST BUT SHOULD BE RIGHT
+turning_angle = 69 # 63.5 not far enough
 final_angle = np.deg2rad(turning_angle) - np.abs(initial_angle) # wrt y-axis
 
 y_PULL4 = np.sqrt(radius**2/(1+np.tan(final_angle)**2))
@@ -275,12 +275,13 @@ robot.MoveJ(J_int_BUT, blocking=True)
 # Perform ON button press
 robot.MoveL(T_BUT1, blocking=True)
 robot.MoveL(T_BUT1_press, blocking=True)
-sleep(1)
+# sleep(1)
 robot.MoveL(T_BUT1, blocking=True)
 
 # Perform OFF button press
 robot.MoveL(T_BUT2, blocking=True)
-sleep(3) # wait for grinder to finish
+# sleep(3) # wait for grinder to finish
+rdk.Pause(3000)
 robot.MoveL(T_BUT2_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT2, blocking=True)
@@ -332,7 +333,8 @@ robot.MoveL(T_BUT3_approach, blocking=True)
 
 # Coffee machine OFF
 robot.MoveL(T_BUT4_approach, blocking=True)
-sleep(2)
+# sleep(2)
+rdk.Pause(3000)
 robot.MoveL(T_BUT4_press, blocking=True)
 # sleep(1)
 robot.MoveL(T_BUT4_approach, blocking=True)
