@@ -4,6 +4,7 @@
 import numpy as np
 import robolink as rl    # RoboDK API
 import robodk as rdk     # Robot toolbox
+from time import sleep
 
 def transform_rotx(deg, translation_vector):
     transform_matrix = [[1, 0, 0, translation_vector[0]],
@@ -371,7 +372,7 @@ robot.MoveL(T_TOOL, blocking=True)
 
 # Pull out portafilter and bring near coffee machine and pause for 5 seconds
 robot.MoveJ(J_int_porta_final, blocking=True)
-rdk.Pause(5000)
+sleep(5)
 
 '''Cup Tool Commands'''
 # Pick up cup tool
