@@ -212,7 +212,7 @@ CUP_b_T_CUP = offset(0, 0, 180)
 CUP_b_T_DEL = offset(0, 0, 217)
 cup_offset = [0,0,10]
 cup_up = [0,0,220]
-del_offset = [0,0,82]
+del_offset = [0,0,85]
 
 CUP_T_CUP_offset = np.array([[0, 1, 0, cup_offset[0]],
                              [0, 0, -1, cup_offset[1]],
@@ -333,6 +333,7 @@ robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Portafilter Tool Attach (Tool Stand)", True)
 '''
+
 '''CAN RUN FROM HOME WITH PORTAFILTER TOOL ATTACHED'''
 
 # Move to Grinder and drop off tool, (works from home with filter attached)
@@ -349,7 +350,8 @@ RDK.RunProgram("Portafilter Tool Detach (Grinder)", True)
 robot.MoveJ(J_int_gr_back, blocking=True)
 robot.MoveJ(target, blocking=True)
 
-''' TAMPER TEST FROM GRINDER PORTAFILTER UNCOMENT THIS SECTION TO TEST
+
+#TAMPER TEST FROM GRINDER PORTAFILTER UNCOMENT THIS SECTION TO TEST
 
 # Reattach to portafilter and move away
 robot.MoveJ(J_int_gr_back, blocking=True)
@@ -366,9 +368,10 @@ robot.MoveL(T_TAM1, blocking=True)
 robot.MoveL(T_TAM2, blocking=True)
 robot.MoveL(T_TAM1, blocking=True)
 robot.MoveJ(J_int_tam_app1, blocking=True)
-'''
 
-'''# GROUP HEAD TEST NOT SURE IF THIS CAN RUN FROM HOME
+
+
+# GROUP HEAD TEST NOT SURE IF THIS CAN RUN FROM HOME
 # Approach and mount to group head
 robot.MoveJ(J_int_head_app1, blocking=True)
 robot.MoveJ(J_int_head_app2, blocking=True)
@@ -382,11 +385,6 @@ robot.MoveL(T_TOOL, blocking=True)
 robot.MoveJ(J_int_porta_final, blocking=True)
 #robot.MoveJ(J_int_porta_final2, blocking=True)
 
-# Put Portafilter back on rack
-robot.MoveJ(target, blocking=True)
-RDK.RunProgram("Portafilter Tool Detach (Tool Stand)", True)
-robot.MoveJ(target, blocking=True)
-'''
 
 ''' Start of Cup tool'''
 '''
@@ -395,7 +393,9 @@ robot.MoveJ(target, blocking=True)
 robot.MoveJ(T_home, blocking=True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Attach (Stand)", True)
+'''
 
+''' CUP TOOL TEST
 # Pick up cup
 robot.MoveJ(J_int_cup1, blocking=True)
 robot.MoveJ(J_int_cup2, blocking=True)
@@ -415,11 +415,18 @@ RDK.RunProgram("Cup Tool Close", True)
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Detach (Stand)", True)
 robot.MoveJ(target, blocking=True)
+'''
+
+
 
 ##INSERT COFFEE MACHINE BUTTON PUSH
-
+'''
 # Coffee delivery
 RDK.RunProgram("Cup Tool Attach (Stand)", True)
+
+'''
+
+''' FINAL DELIVERY
 robot.MoveJ(J_int_cupback, blocking=True)
 RDK.RunProgram("Cup Tool Open", True)
 robot.MoveJ(J_int_coffee, blocking=True)
@@ -429,7 +436,9 @@ robot.MoveJ(J_int_coffee, blocking=True)
 robot.MoveJ(J_int_cupback, blocking=True)
 robot.MoveL(T_CUP_DEL, blocking=True)
 RDK.RunProgram("Cup Tool Open", True)
+'''
 
+'''
 # Final Deattach
 robot.MoveJ(J_int_tool, blocking=True)
 RDK.RunProgram("Cup Tool Detach (Stand)", True)
