@@ -97,8 +97,8 @@ theta_gr = np.rad2deg(np.arctan2(ur_diff_gr_pf2[1],ur_diff_gr_pf2[0]))
 UR_T_G = transform_rotz(theta_gr,[482.7,-432.1,316.1])
 G_T_PF2 = transform_roty(90 ,[157.61, 0, -250.45])
 
-## IMPORTANT SET OFFSET OF APPROACH (FINE TUNING)
-PF2_T_offset = transform_rotz(0.05,[15,0,0])
+## IMPORTANT SET OFFSET OF APPROACH (SET TO 0.5mm to the left)
+PF2_T_offset = transform_rotz(0.05,[15,-0.5,0])
 
 # Portafilter to Grinder
 UR_T_PF2 = np.matmul(UR_T_G, G_T_PF2)
@@ -205,7 +205,7 @@ CUP_b_T_CUP = offset(0, 0, 180)
 CUP_b_T_DEL = offset(0, 0, 217)
 cup_offset = [2,0,6]
 cup_up = [0,0,220]
-del_offset = [0,0,85]
+del_offset = [2,0,85]
 
 CUP_T_CUP_offset = np.array([[0, 1, 0, cup_offset[0]],
                              [0, 0, -1, cup_offset[1]],
@@ -492,7 +492,8 @@ J_int_TAB = [-61.070000, -106.070000, -96.430000, -154.290000, 260.360000, -132.
 # Coffee Machine button approach
 J_int_CM = [-150.854031, -103.395493, -125.030703, 48.426196, 140.574931, -40.000000]
 
-
+# Final backoff after coffee delivery
+J_int_del = [-43.305999, -47.161810, -126.722605, -186.115585, -43.305999, -220.000000]
 
 ''' Run program Module '''
 # Start from home
@@ -659,10 +660,8 @@ robot.MoveJ(J_int_coffee, blocking=True)
 robot.MoveJ(J_int_cupback, blocking=True)
 robot.MoveL(T_CUP_DEL, blocking=True)
 RDK.RunProgram("Cup Tool Open", True)
-# TODO: - Back away from cup
-#       - Detach Cup Tool
-#       - Go Home
-#robot.MoveJ(J_int_cup_backoff, blocking=True)
-#robot.MoveJ(J_int_tool, blocking=True)
-#RDK.RunProgram("Cup Tool Detach (Stand)", True)
-#robot.MoveJ(target, blocking=True)
+robot.MoveJ(J_int_del, blocking=True)
+robot.MoveJ(J_int_cupback, blocking=True)
+RDK.RunProgram("Cup Tool Close", True)
+RDK.RunProgram("Cup Tool Detach (Stand)", True)
+robot.MoveJ(target, blocking=True)

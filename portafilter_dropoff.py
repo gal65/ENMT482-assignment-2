@@ -103,7 +103,7 @@ UR_T_G = transform_rotz(theta_gr,[482.7,-432.1,316.1])
 G_T_PF2 = transform_roty(90 ,[157.61, 0, -250.45])
 
 ## IMPORTANT SET OFFSET OF APPROACH (FINE TUNING)
-PF2_T_offset = transform_rotz(0.05,[15,0,0])
+PF2_T_offset = transform_rotz(0.05,[15,-0.5,0])
 
 # Portafilter to Grinder
 UR_T_PF2 = np.matmul(UR_T_G, G_T_PF2)
@@ -210,7 +210,7 @@ CUP_b_T_CUP = offset(0, 0, 180)
 CUP_b_T_DEL = offset(0, 0, 217)
 cup_offset = [2,0,6]
 cup_up = [0,0,220]
-del_offset = [0,0,85]
+del_offset = [2,0,85]
 
 CUP_T_CUP_offset = np.array([[0, 1, 0, cup_offset[0]],
                              [0, 0, -1, cup_offset[1]],
@@ -296,6 +296,9 @@ J_int_cupback = [-53.998442, -53.866255, -111.676612, -194.457133, -53.998442, -
 
 # Approach Coffee Machine
 J_int_coffee = [-78.786752, -66.395504, -143.802923, -149.801573, -22.257653, -220.000000]
+
+# Final backoff after coffee delivery
+J_int_del = [-43.305999, -47.161810, -126.722605, -186.115585, -43.305999, -220.000000]
 
 '''RDK Conversion '''
 # Convert Matricies to RDK matricies
