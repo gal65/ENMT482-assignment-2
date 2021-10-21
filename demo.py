@@ -27,10 +27,10 @@ def transform_rotz(deg, translation_vector):
                         [0, 0, 0, 1]]
     return transform_matrix
 
-# Tool transforms (return inverses)
+# Tool transforms (return product of inverses)
+TCP_T_UT = transform_rotz(-50, [0, 0, 0]) # Universal Tool frame in the TCP frame
 def grinder_tool(mode):
     # Grinder Tool frame in TCP frame
-    TCP_T_GT = transform_rotz(-50, [0, 0, 0])
     if (mode.lower() == 'push'):
         # PUSHy bit in Grinder Tool frame
         D_PUSH = [0, 0, 102.82]
@@ -39,25 +39,23 @@ def grinder_tool(mode):
         # PULLy bit in Grinder Tool frame
         D_PULL = [-50, 0, 67.06]
         GT_T = transform_rotz(0, D_PULL)        
-    return np.matmul(np.linalg.inv(GT_T), np.linalg.inv(TCP_T_GT))
+    return np.matmul(np.linalg.inv(GT_T), np.linalg.inv(TCP_T_UT))
 
 def portafilter_tool(mode):
     # Portafilter Tool frame in TCP frame
-    TCP_T_PT = transform_rotz(-50, [0, 0, 0])
     if (mode.lower() == 'pf1'):
         D_PF1 = [4.71, 0, 144.76]
         PT_T_PF = transform_roty(7.5, D_PF1)
     else:
         D_PF2 = [-32, 0, 27.56]
         PT_T_PF = transform_roty(0, D_PF2)
-    return np.matmul(np.linalg.inv(PT_T_PF), np.linalg.inv(TCP_T_PT))         
+    return np.matmul(np.linalg.inv(PT_T_PF), np.linalg.inv(TCP_T_UT))         
 
 def cup_tool():
     # Cup Tool frame in TCP frame
-    TCP_T_CT = transform_rotz(-50, [0, 0, 0]) 
     D_CC = [-47, 0, 186.11]
     CT_T_CC = transform_roty(0, D_CC)
-    return np.matmul(np.linalg.inv(CT_T_CC), np.linalg.inv(TCP_T_CT))
+    return np.matmul(np.linalg.inv(CT_T_CC), np.linalg.inv(TCP_T_UT))
     
 def offset(x,y,z):
     #Creates a translation transformation matrix
