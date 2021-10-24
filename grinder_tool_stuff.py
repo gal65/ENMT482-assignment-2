@@ -128,13 +128,14 @@ GM_T_TAB = np.array([[0, 0, -1, D_TAB[0]],
                              [0, -1, 0, D_TAB[2]],
                              [0, 0, 0, 1]])
 
-''' Angle of face of tab '''
-GM_T_TAB = np.matmul(GM_T_TAB, transform_roty(15, [0,0,0])) # could be atan(35.82/83.8) = 23.1 deg
+''' Angle of face of tab and apply vertical offset for portafilter clearance'''
+TAB_OFFSET = transform_roty(15, [0,-30,0])
+GM_T_TAB = np.matmul(GM_T_TAB, TAB_OFFSET)
 UR_T_TAB = np.matmul(UR_T_GM, GM_T_TAB)
 
-''' TAB OFFSET '''
-TAB_OFFSET = offset(0, -30, 0)
-UR_T_TAB = np.matmul(UR_T_TAB, TAB_OFFSET)
+#''' TAB OFFSET '''
+#TAB_OFFSET = offset(0, -30, 0)
+#UR_T_TAB = np.matmul(UR_T_TAB, TAB_OFFSET)
 
 # Approach offset
 approach_offset = offset(40, 0, 40)
@@ -154,7 +155,7 @@ radius = np.sqrt(GM_D_PULL2[0]**2 + GM_D_PULL2[1]**2)
 initial_angle = np.arctan2(GM_D_PULL2[0], GM_D_PULL2[1]) # wrt y-axis
 
 ''' turning angle '''
-turning_angle = 69 # 63.5 not far enough
+turning_angle = 69 
 final_angle = np.deg2rad(turning_angle) - np.abs(initial_angle) # wrt y-axis
 
 y_PULL4 = np.sqrt(radius**2/(1+np.tan(final_angle)**2))
