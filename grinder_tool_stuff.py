@@ -128,8 +128,9 @@ GM_T_TAB = np.array([[0, 0, -1, D_TAB[0]],
                              [0, -1, 0, D_TAB[2]],
                              [0, 0, 0, 1]])
 
-''' Angle of face of tab and apply vertical offset for portafilter clearance'''
-TAB_OFFSET = transform_roty(15, [0,-30,0])
+''' Angle of tab face and apply vertical offset for portafilter clearance'''
+tab_angle = np.arctan2(D_TAB[0], D_TAB[1])
+TAB_OFFSET = transform_roty(tab_angle, [0,-30,0])
 GM_T_TAB = np.matmul(GM_T_TAB, TAB_OFFSET)
 UR_T_TAB = np.matmul(UR_T_GM, GM_T_TAB)
 
@@ -167,7 +168,7 @@ GM_T_TAB_PULL4 = np.array([[0, 0, -1, GM_D_PULL4[0]],
                              [1, 0, 0, GM_D_PULL4[1]],
                              [0, -1, 0, GM_D_PULL4[2]],
                              [0, 0, 0, 1]])
-GM_T_TAB_PULL4 = np.matmul(GM_T_TAB_PULL4, transform_roty(15-turning_angle, [0,0,0]))
+GM_T_TAB_PULL4 = np.matmul(GM_T_TAB_PULL4, transform_roty(initial_angle-turning_angle, [0,0,0]))
 # convert to UR frame
 UR_T_TAB_PULL4 = np.matmul(UR_T_GM, GM_T_TAB_PULL4)
 
@@ -184,7 +185,7 @@ GM_T_TAB_PULL3 = np.array([[0, 0, -1, GM_D_PULL3[0]],
                              [1, 0, 0, GM_D_PULL3[1]],
                              [0, -1, 0, GM_D_PULL3[2]],
                              [0, 0, 0, 1]])
-GM_T_TAB_PULL3 = np.matmul(GM_T_TAB_PULL3, transform_roty(15-turning_angle/2, [0,0,0]))
+GM_T_TAB_PULL3 = np.matmul(GM_T_TAB_PULL3, transform_roty(initial_angle-turning_angle/2, [0,0,0]))
 # convert to UR frame
 UR_T_TAB_PULL3 = np.matmul(UR_T_GM, GM_T_TAB_PULL3)
 
